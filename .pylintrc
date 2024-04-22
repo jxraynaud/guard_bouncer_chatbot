@@ -1,0 +1,11 @@
+[MESSAGES CONTROL]
+enable=
+    use-symbolic-message-instead,
+    useless-suppression,
+disable=
+    attribute-defined-outside-init,
+    missing-module-docstring,
+    trailing-whitespace,
+    line-too-long,
+    broad-exception-caught,
+    missing-final-newline,
