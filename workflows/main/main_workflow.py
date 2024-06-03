@@ -6,6 +6,7 @@ from langchain.schema.runnable import Runnable
 
 from workflows.main.main_state import MainState
 
+MAX_CHARACTERS = 1000
 
 class MainWorkflow():
     """Class implementing the main workflow of the chatbot."""
@@ -40,10 +41,18 @@ class MainWorkflow():
 
     # Private nodes and LCEL
 
-    async def _guard(self, _: MainState) -> MainState:
+    async def _guard(self, state: MainState) -> MainState:
         """ Guard node """
         rejected = random.choice([True, False])
-        return {'rejected': rejected, 'reason_rejected': 'Unlucky, try again' if rejected else 'You were lucky'}
+        if len(state['chat_history']) > MAX_CHARACTERS:
+            rejected = True
+            reason_rejected = f'The user message is too long: {len(state["chat_history"])} characters, the maximum is {MAX_CHARACTERS}'
+        else:
+            if rejected:
+                reason_rejected = 'Unlucky, try again'
+            else:
+                reason_rejected = 'You were lucky'
+        return {'rejected': rejected, 'reason_rejected': reason_rejected}
 
     async def _think(self, _: MainState) -> MainState:
         """ TBD """
